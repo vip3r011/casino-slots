@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="UTF-8">
+   <title>Casino Slots</title>
+   <link href="https://fonts.googleapis.com/css?family=Scada:400,400i,700,700i&subset=cyrillic" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css?family=Poller+One" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css?family=Anton&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+   <link rel="stylesheet" href="css/libs.min.css">
+   <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+   <div id="app">
+      <main class="main" ref="main">
+         <section class="main__common-section common-section section">
+            <div class="common-section__decor common-section__decor_left">
+               <img src="img/palms.png" alt="palm-leaves">
+            </div>
+            <div class="common-section__decor common-section__decor_right">
+               <img src="img/palms.png" alt="palm-leaves">
+            </div>
+            <div class="container">
+               <div class="common-section__wrapper">
+                  <div class="common-section__logo common-logo">
+                     <span class="common-logo__border">
+                        <span class="common-logo__casino">C<span class="common-logo__casino_blink">a</span>sin<span class="common-logo__casino_blink">o</span>
+                           <div class="common-logo__slots">Slots</div>
+                        </span>
+                     </span>
+                  </div>
+                  <nav class="common-section__menu common-menu">
+                     <ul class="common-menu__list">
+                        <li class="common-menu__item">
+                           <button class="common-menu__btn-signin common-menu__btn btn"
+                              @click="openModal('modalEnter', 'signin')"
+                           >Играть</button>
+                        </li>
+                        <li class="common-menu__item">
+                           <button class="common-menu__btn-signup common-menu__btn btn"
+                              @click="openModal('modalEnter', 'signup')"
+                           >Стать игроком</button>
+                        </li>
+                     </ul>
+                  </nav>
+                  <div class="common-section__gamers-list-wrapper common-gamers-list-wrapper"
+                     :class="{'common-gamers-list-wrapper_no-active': topUsers.length === 0}"
+                  >
+                     <ul class="common-section__gamers-list common-gamers-list">
+                        <li class="common-gamers-list__head">
+                           <span class="common-gamers-list__title-col">Имя</span>
+                           <span class="common-gamers-list__title">- Топ игроков -</span>
+                           <span class="common-gamers-list__title-col">Счет</span>                           
+                        </li>
+                        <li class="common-gamers-list__item" 
+                           v-for="user in topUsers"
+                        >
+                           <div class="common-gamers-list__item-name">{{ user.userName }}</div>
+                           <div>{{ '$ ' + user.userBank }}</div>   
+                        </li>
+                     </ul>
+                  </div>
+               </div>
+            </div>
+         </section>
+         <section class="main__gambling-section gambling-section section"
+            v-if="gamblingSectionShow"
+         >
+            <div class="gambling-section__btns gambling-section__btns_left">
+               <div class="gambling-section__btns-hover-area">
+                  <button class="gambling-section__btn-rules gambling-section__btn btn"
+                     @click="openModal('modalRules')"
+                  >
+                     <span>Правила</span>  
+                  </button>
+                  <button class="gambling-section__btn-info gambling-section__btn btn"
+                     @click="openModal('modalProfile')"
+                  >
+                     <span>Игрок</span>
+                  </button>
+               </div>
+            </div>
+            <div class="gambling-section__btns gambling-section__btns_right">
+               <div class="gambling-section__btns-hover-area">
+                  <button class="gambling-section__btn-exit gambling-section__btn btn"
+                     @click="offGame()"
+                  >
+                     <span>Выйти</span>  
+                  </button>
+               </div>
+            </div>
+            <div class="gambling-section__slots slots" ref="slots">
+               <div class="slots__top slots-top">
+                  <div class="slots-top__wrapper">
+                     <div class="slots-top__message-screen">
+                        <span class="slots-top__message-text">
+                           Добро пожаловать!
+                        </span>
+                     </div>
+                     <ul class="slots-top__table">
+                        <li class="slots-top__table-row">
+                           <div class="slots-top__table-col">
+                              <img class="slots-top__table-img" src="img/slots-icon/seven.svg" alt="seven">
+                              <img class="slots-top__table-img" src="img/slots-icon/seven.svg" alt="seven">
+                              <img class="slots-top__table-img" src="img/slots-icon/seven.svg" alt="seven">
+                           </div>
+                           <div class="slots-top__table-col">JACKPOT</div>
+                           <div class="slots-top__table-col">
+                              <img class="slots-top__table-img" src="img/slots-icon/seven.svg" alt="seven">
+                              <img class="slots-top__table-img" src="img/slots-icon/seven.svg" alt="seven">
+                              <img class="slots-top__table-img" src="img/slots-icon/seven.svg" alt="seven">
+                           </div>
+                        </li>
+                        <li class="slots-top__table-row">
+                           <div class="slots-top__table-col">
+                              <img class="slots-top__table-img" src="img/slots-icon/watermelon.svg" alt="watermelon">
+                              <img class="slots-top__table-img" src="img/slots-icon/watermelon.svg" alt="watermelon">
+                              <img class="slots-top__table-img" src="img/slots-icon/watermelon.svg" alt="watermelon">
+                           </div>
+                           <div class="slots-top__table-col">100</div>
+                           <div class="slots-top__table-col">
+                              <img class="slots-top__table-img" src="img/slots-icon/watermelon.svg" alt="watermelon">
+                              <img class="slots-top__table-img" src="img/slots-icon/watermelon.svg" alt="watermelon">
+                              <img class="slots-top__table-img" src="img/slots-icon/watermelon.svg" alt="watermelon">
+                           </div>
+                        </li>
+                        <li class="slots-top__table-row">
+                           <div class="slots-top__table-col">
+                              <img class="slots-top__table-img" src="img/slots-icon/bell.svg" alt="bell">
+                              <img class="slots-top__table-img" src="img/slots-icon/bell.svg" alt="bell">
+                              <img class="slots-top__table-img" src="img/slots-icon/bell.svg" alt="bell">
+                           </div>
+                           <div class="slots-top__table-col">50</div>
+                           <div class="slots-top__table-col">
+                              <img class="slots-top__table-img" src="img/slots-icon/bell.svg" alt="bell">
+                              <img class="slots-top__table-img" src="img/slots-icon/bell.svg" alt="bell">
+                              <img class="slots-top__table-img" src="img/slots-icon/bell.svg" alt="bell">
+                           </div>
+                        </li>
+                        <li class="slots-top__table-row">
+                           <div class="slots-top__table-col">
+                              <img class="slots-top__table-img" src="img/slots-icon/lemon.svg" alt="lemon.svg">
+                              <img class="slots-top__table-img" src="img/slots-icon/lemon.svg" alt="lemon.svg">
+                              <img class="slots-top__table-img" src="img/slots-icon/lemon.svg" alt="lemon.svg">
+                           </div>
+                           <div class="slots-top__table-col">20</div>
+                           <div class="slots-top__table-col">
+                              <img class="slots-top__table-img" src="img/slots-icon/lemon.svg" alt="lemon.svg">
+                              <img class="slots-top__table-img" src="img/slots-icon/lemon.svg" alt="lemon.svg">
+                              <img class="slots-top__table-img" src="img/slots-icon/lemon.svg" alt="lemon.svg">
+                           </div>
+                        </li>
+                        <li class="slots-top__table-row">
+                           <div class="slots-top__table-col">
+                              <img class="slots-top__table-img" src="img/slots-icon/orange.svg" alt="orange">
+                              <img class="slots-top__table-img" src="img/slots-icon/orange.svg" alt="orange">
+                              <img class="slots-top__table-img" src="img/slots-icon/orange.svg" alt="orange">
+                           </div>
+                           <div class="slots-top__table-col">10</div>
+                           <div class="slots-top__table-col">
+                              <img class="slots-top__table-img" src="img/slots-icon/orange.svg" alt="orange">
+                              <img class="slots-top__table-img" src="img/slots-icon/orange.svg" alt="orange">
+                              <img class="slots-top__table-img" src="img/slots-icon/orange.svg" alt="orange">
+                           </div>
+                        </li>
+                        <li class="slots-top__table-row">
+                           <div class="slots-top__table-col">
+                              <img class="slots-top__table-img" src="img/slots-icon/cherry.svg" alt="cherry">
+                              <img class="slots-top__table-img" src="img/slots-icon/cherry.svg" alt="cherry">
+                              <div class="slots-top__table-img">ANY</div>
+                           </div>
+                           <div class="slots-top__table-col">7</div>
+                           <div class="slots-top__table-col">
+                              <img class="slots-top__table-img" src="img/slots-icon/cherry.svg" alt="cherry">
+                              <img class="slots-top__table-img" src="img/slots-icon/cherry.svg" alt="cherry">
+                              <div class="slots-top__table-img">ANY</div>
+                           </div>
+                        </li>
+                        <li class="slots-top__table-row">
+                           <div class="slots-top__table-col">
+                              <img class="slots-top__table-img" src="img/slots-icon/cherry.svg" alt="cherry">
+                              <div class="slots-top__table-img">ANY</div>
+                              <div class="slots-top__table-img">ANY</div>
+                           </div>
+                           <div class="slots-top__table-col">5</div>
+                           <div class="slots-top__table-col">
+                              <img class="slots-top__table-img" src="img/slots-icon/cherry.svg" alt="cherry">
+                              <div class="slots-top__table-img">ANY</div>
+                              <div class="slots-top__table-img">ANY</div>
+                           </div>
+                        </li>
+                     </ul>
+                  </div>
+               </div>
+               <div class="slots__main slots-main">
+                  <div class="slots-main__wrapper">
+                     <div class="slots-main__drums-section">
+                        <div class="slots-main__coin">
+                           <div class="slots-main__coin-line" ref="coin2">COIN 2</div>
+                           <div class="slots-main__coin-line" ref="coin1">COIN 1</div>
+                           <div class="slots-main__coin-line" ref="coin3">COIN 3</div>
+                        </div>
+                        <div class="slots-main__drums">
+                           <div class="slots-main__drums-border">
+                              <div class="slots-main__drums-screen"></div>
+                              <div class="slots-main__drums-screen"></div>
+                              <div class="slots-main__drums-screen"></div>
+                           </div>
+                           <div class="slots-main__drums-container">
+                              <div class="slots-main__drum">
+                                 <div class="slots-main__drum-ring">
+                                    <div class="slots-main__drum-slot" data-name="cherry" data-num="0">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/cherry.svg" alt="cherry">
+                                       </div>
+                                    </div>
+                                    <div class="slots-main__drum-slot" data-name="watermelon" data-num="1">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/watermelon.svg" alt="watermelon">
+                                       </div>
+                                    </div>
+                                    <div class="slots-main__drum-slot" data-name="lemon" data-num="2">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/lemon.svg" alt="lemon">
+                                       </div>
+                                    </div>
+                                    <div class="slots-main__drum-slot" data-name="orange" data-num="3">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/orange.svg" alt="orange">
+                                       </div>
+                                    </div>
+                                    <div class="slots-main__drum-slot" data-name="bell" data-num="4">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/bell.svg" alt="bell">
+                                       </div>
+                                    </div>
+                                    <div class="slots-main__drum-slot" data-name="watermelon" data-num="5">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/watermelon.svg" alt="watermelon">
+                                       </div>
+                                    </div>
+                                    <div class="slots-main__drum-slot" data-name="lemon" data-num="6">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/lemon.svg" alt="lemon">
+                                       </div>
+                                    </div>
+                                    <div class="slots-main__drum-slot" data-name="seven" data-num="7">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/seven.svg" alt="seven">
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="slots-main__drum">
+                                 <div class="slots-main__drum-ring">
+                                    <div class="slots-main__drum-slot" data-name="lemon" data-num="0">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/lemon.svg" alt="lemon">
+                                       </div>
+                                    </div>
+                                    <div class="slots-main__drum-slot" data-name="bell" data-num="1">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/bell.svg" alt="bell">
+                                       </div>
+                                    </div>
+                                    <div class="slots-main__drum-slot" data-name="orange" data-num="2">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/orange.svg" alt="orange">
+                                       </div>
+                                    </div>
+                                    <div class="slots-main__drum-slot" data-name="watermelon" data-num="3">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/watermelon.svg" alt="watermelon">
+                                       </div>
+                                    </div>
+                                    <div class="slots-main__drum-slot" data-name="lemon" data-num="4">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/lemon.svg" alt="lemon">
+                                       </div>
+                                    </div>
+                                    <div class="slots-main__drum-slot" data-name="seven" data-num="5">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/seven.svg" alt="seven">
+                                       </div>
+                                    </div>
+                                    <div class="slots-main__drum-slot" data-name="cherry" data-num="6">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/cherry.svg" alt="cherry">
+                                       </div>
+                                    </div>
+                                    <div class="slots-main__drum-slot" data-name="orange" data-num="7">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/orange.svg" alt="orange">
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="slots-main__drum">
+                                 <div class="slots-main__drum-ring">
+                                    <div class="slots-main__drum-slot" data-name="watermelon" data-num="0">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/watermelon.svg" alt="watermelon">
+                                       </div>
+                                    </div>
+                                    <div class="slots-main__drum-slot" data-name="lemon" data-num="1">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/lemon.svg" alt="lemon">
+                                       </div>
+                                    </div>
+                                    <div class="slots-main__drum-slot" data-name="seven" data-num="2">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/seven.svg" alt="seven">
+                                       </div>
+                                    </div>
+                                    <div class="slots-main__drum-slot" data-name="bell" data-num="3">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/bell.svg" alt="bell">
+                                       </div>
+                                    </div>
+                                   <div class="slots-main__drum-slot" data-name="cherry" data-num="4">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/cherry.svg" alt="cherry">
+                                       </div>
+                                    </div>
+                                    <div class="slots-main__drum-slot" data-name="orange" data-num="5">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/orange.svg" alt="orange">
+                                       </div>
+                                    </div>
+                                    <div class="slots-main__drum-slot" data-name="lemon" data-num="6">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/lemon.svg" alt="lemon">
+                                       </div>
+                                    </div>
+                                    <div class="slots-main__drum-slot" data-name="bell" data-num="7">
+                                       <div class="slots-main__drum-slot-icon">
+                                          <img src="img/slots-icon/bell.svg" alt="bell">
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>   
+                        </div>
+                        <div class="slots-main__info">
+                           <div class="slots-main__info-arrow">
+                              <span class="slots-main__info-arrow-text">INSERT</span>
+                              <span class="slots-main__info-arrow-text">BILLS</span>
+                              <span class="slots-main__info-arrow-text">BELLOW</span>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="slots-main__info-section">
+                        <div class="slots-main__current-rate">
+                           <div class="slots-main__current-rate-screen slots-main__info-section-screen">
+                              {{ coinsPlayed }}
+                           </div>
+                           <div class="slots-main__current-rate-descr slots-main__info-section-descr">
+                              COINS PLAYED
+                           </div>
+                        </div>
+                        <div class="slots-main__credits">
+                           <div class="slots-main__credits-screen slots-main__info-section-screen">
+                              {{ credits }}
+                           </div>
+                           <div class="slots-main__credits-descr slots-main__info-section-descr">
+                              CREDITS
+                           </div>
+                        </div>
+                        <div class="slots-main__slots-rate">
+                           <span>
+                              <span class="slots-main__slots-rate-sign">$</span>
+                              <span class="slots-main__slots-rate-price">1</span>
+                              <span class="slots-main__slots-rate-sign">00</span>
+                           </span>
+                        </div>
+                        <div class="slots-main__win-paid">
+                           <div class="slots-main__win-paid-screen slots-main__info-section-screen">
+                              {{ winnerPaid }}
+                           </div>
+                           <div class="slots-main__win-paid-descr slots-main__info-section-descr">
+                              WINNER PAID
+                           </div>
+                        </div>
+                        <div class="slots-main__money-place"
+                           @click="openModal('modalAccount')"
+                        >
+                           <div class="slots-main__money-taker"></div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="slots__controls slots-controls">
+                  <div class="slots-controls__wrapper">
+                     <div class="slots-controls-grid">
+                        <div class="slots-controls-grid__col">
+                           <div class="slots-controls__btns">
+                              <div class="slots-controls__btn-platform-bottom slots-controls__btn-platform-bottom_start">
+                                 <div class="slots-controls__btn-platform">
+                                    <div class="slots-controls__btn-bottom">
+                                       <button class="slots-controls__btn slots-controls__btn_cash-out btn"
+                                          :class="{'slots-controls__btn_active': btnCashOut}"
+                                          @click="click('btnCashOut')"
+                                       >CASH OUT</button>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="slots-controls-grid__col">
+                           <div class="slots-controls__btns">
+                              <div class="slots-controls__btn-platform-bottom">
+                                 <div class="slots-controls__btn-platform">
+                                    <div class="slots-controls__btn-bottom">
+                                       <button class="slots-controls__btn slots-controls__btn_play-max btn"
+                                          :class="{'slots-controls__btn_active': btnPlayMax}"
+                                          @click="click('btnPlayMax')"
+                                       >PLAY MAX</button>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="slots-controls__btn-platform-bottom">
+                                 <div class="slots-controls__btn-platform">
+                                    <div class="slots-controls__btn-bottom">
+                                       <button class="slots-controls__btn slots-controls__btn_spin btn"
+                                          :class="{'slots-controls__btn_active': btnSpin}"
+                                          @click="click('btnSpin')"
+                                       >SPIN</button>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="slots-controls__btn-platform-bottom">
+                                 <div class="slots-controls__btn-platform">
+                                    <div class="slots-controls__btn-bottom">
+                                       <button class="slots-controls__btn slots-controls__btn_bet-one btn"
+                                          :class="{'slots-controls__btn_active': btnBetOne}"
+                                          @click="click('btnBetOne')"
+                                       >BET ONE</button>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="slots-controls-grid__col">
+                           <div class="slots-controls__info-area">
+                              Чтобы пополнить игровой автомат кликните выше!
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="gambling-section__decor gambling-section__decor_left">
+               <img src="img/palms.png" alt="palm-leaves">
+            </div>
+            <div class="gambling-section__decor gambling-section__decor_right">
+               <img src="img/palms.png" alt="palm-leaves">
+            </div>
+         </section>
+      </main>
+      <div class="modals">
+         <section class="modal-enter modal" 
+            ref="modalEnter"
+            :class="{'modal-enter_green': modalSubNameCurrent==='signup'}"
+         >
+            <div class="modal__title-wrapper">
+               <h3 class="modal__title"
+                  v-if="modalSubNameCurrent==='signin'"
+               >Вход</h3>
+               <h3 class="modal__title"
+                  v-else
+               >Новый игрок</h3>
+            </div>
+            <div class="modal-enter__control modal__control">
+               <input class="modal-enter__control-input modal__control-input" type="text" placeholder="Введите имя"
+                  v-model.lazy="userName"
+               >
+            </div>
+            <div class="modal-enter__control modal__control"
+               v-if="userFound"
+            >
+               <input class="modal-enter__control-input modal__control-input" type="password" placeholder="Введите пароль"
+                  v-model="userPass"
+               >
+            </div>
+            <p class="modal-enter__question"
+               v-if="modalSubNameCurrent==='signin' && userFound"
+            >{{ 'Подсказка: ' + userHint }}</p>
+            <div class="modal-enter__control modal__control"
+               v-if="modalSubNameCurrent==='signup' && userFound"
+            >
+               <input class="modal-enter__control-input modal__control-input" type="text" placeholder="Укажите подсказку"
+                  v-model="userHint"
+               >
+            </div>
+            <p class="modal__messages">{{ modalMessages }}</p>
+
+            <div class="modal-enter__btns modal__btns">
+               <button class="modal-enter__btn modal__btn modal__btn-next btn"
+                  @click="userFound ? preGame() : spotUser()"
+               >Далее</button>
+            </div>
+            <button class="modal-enter__btn modal__btn modal__btn-close btn" data-fancybox-close>
+               <i class="fas fa-times"></i>
+            </button>
+         </section>
+         <section class="modal-account modal" ref="modalAccount">
+            <div class="modal__title-wrapper">
+               <h3 class="modal__title">Игра</h3>
+            </div>
+            <div class="modal-account__card-wrapper">
+               <div class="modal-account__card">
+                  <div class="modal-account__card-grid">
+                     <div class="modal-account__card-grid-col">
+                        <div class="modal-account__card-img"></div>
+                     </div>
+                     <div class="modal-account__card-grid-col">
+                        <div class="modal-account__card-logo">
+                           <span class="modal-account__card-logo-casino">
+                              Casino
+                           </span>
+                           <span class="modal-account__card-logo-slots">
+                              Slots
+                           </span>
+                        </div>
+                        <div class="modal-account__card-info">
+                           <div class="modal-account__card-name">{{ userNameHidden }}</div>
+                           <div class="modal-account__card-bank"><span>$</span>{{ userBank }}</div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="modal-account__rate-group">
+               <button class="modal-account__rate-btn modal-account__rate-btn_min btn"
+                  @click="userBank > 0 && userRate > 0 ? userBank < 5 ? userRate-=userBank : userRate-=5 : userRate-=0"
+               >-</button>
+               <div class="modal-account__rate-control modal__control">
+               <input class="modal-account__rate-control-input modal__control-input" type="number" step="5" min="0" placeholder="0"
+                  v-model="userRate"
+               >
+               </div>
+               <button class="modal-account__rate-btn modal-account__rate-btn_plus btn"
+                  @click="userRate-=0; userBank > 0 ? userBank > 5 ? userRate+=5 : userRate+=userBank : userRate+=0"
+               >+</button>
+            </div>
+            <p class="modal__messages">{{ modalMessages }}</p>
+            <div class="modal__btns">
+               <button class="modal__btn btn"
+                  @click="onSpin()"
+               >Начать</button>
+            </div>
+            <button class="modal__btn-close btn" data-fancybox-close>
+               <i class="fas fa-times"></i>
+            </button>
+         </section>
+         <section class="modal-profile modal" ref="modalProfile">
+            <div class="modal__title-wrapper">
+               <h3 class="modal__title modal-profile__title">Игрок</h3>
+            </div>
+            <h4 class="modal-profile__name">{{ userNameHidden }}</h4>
+            <div class="modal-profile__item">
+               <h4 class="modal-profile__item-title">Сумма на счету:</h4>
+               <div class="modal-profile__item-info">{{ '$ ' + userBank }}</div>
+            </div>
+            <div class="modal-profile__item">
+               <h4 class="modal-profile__item-title">Ставок всего:</h4>
+               <div class="modal-profile__item-info">{{ userSpins }}</div>
+            </div>
+            <div class="modal-profile__item">
+               <h4 class="modal-profile__item-title">Ставок по суммам:</h4>
+               <div class="modal-profile__item-info">
+                  <div class="modal-profile__item-indicator">
+                     <div class="modal-profile__item-indicator-name">
+                        $ 1
+                     </div>
+                     <div class="modal-profile__item-indicator-value">
+                        {{ userRate1 }}
+                     </div>
+                  </div>
+                  <div class="modal-profile__item-indicator">
+                     <div class="modal-profile__item-indicator-name">
+                        $ 2
+                     </div>
+                     <div class="modal-profile__item-indicator-value">
+                        {{ userRate2 }}
+                     </div>
+                  </div>
+                  <div class="modal-profile__item-indicator">
+                     <div class="modal-profile__item-indicator-name">
+                        $ 3
+                     </div>
+                     <div class="modal-profile__item-indicator-value">
+                        {{ userRate3 }}
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="modal-profile__item">
+               <h4 class="modal-profile__item-title">Выигрышей по линиям:</h4>
+               <div class="modal-profile__item-info">
+                  <div class="modal-profile__item-indicator">
+                     <div class="modal-profile__item-indicator-name">
+                        COIN 1
+                     </div>
+                     <div class="modal-profile__item-indicator-value">
+                        {{ userWinsCoin1 }}
+                     </div>
+                  </div>
+                  <div class="modal-profile__item-indicator">
+                     <div class="modal-profile__item-indicator-name">
+                        COIN 2
+                     </div>
+                     <div class="modal-profile__item-indicator-value">
+                        {{ userWinsCoin2 }}
+                     </div>
+                  </div>
+                  <div class="modal-profile__item-indicator">
+                     <div class="modal-profile__item-indicator-name">
+                        COIN 3
+                     </div>
+                     <div class="modal-profile__item-indicator-value">
+                        {{ userWinsCoin3 }}
+                     </div>
+                  </div>
+               </div>
+            </div>  
+            <button class="modal__btn-close btn" data-fancybox-close>
+               <i class="fas fa-times"></i>
+            </button>
+         </section>
+         <section class="modal-rules modal" ref="modalRules">
+            <div class="modal__title-wrapper">
+               <h3 class="modal__title">Правила</h3>
+            </div>
+            <div class="modal-rules__item">
+               <h3 class="modal-rules__item-title">Об игре</h3>
+               <div class="modal-rules__item-text">
+                  <p><span class="modal-rules__item-text-b">CASINO SLOTS</span> - симулятор игрового автомата (относится к семейству азартных игр).</p>
+                  <p>В игре используется условная игровая валюта, с помощью которой происходят расчеты между игрой и игроком. Игра НЕ собирает и НЕ выплачивает настоящие деньги :)</p>
+               </div>
+            </div>
+            <div class="modal-rules__item">
+               <h3 class="modal-rules__item-title">Общее</h3>
+               <div class="modal-rules__item-text">
+                  <p>При регистрации на имя игрока будет создан игровой счет, который автоматически будет пополнен на $500.</p>
+                  <p>Личным игровым счетом распоряжается только игрок, но в ознакомительных целях информацией о сумме на счету могут владеть другие игроки. К примеру, если игрок попадет в 5-ку самых успешных.</p>
+                  <p>Средства на личном игровом счету можно тратить и зарабатывать делая ставки в игровом автомате.</p>
+                  <p>Просмотр личного счета, игроком, доступен только в игровой зоне. Узнать сумму на счету можно:</p>
+                  <ul>
+                     <li>при пополнении игрового автомата</li>
+                     <li>при посещении игрового профиля</li>
+                  </ul>
+                  <p>Просмотр игрового профиля, доступен только в игровой зоне и исключительно игроку. Ознакомиться с игровым профилем можно, переместив курсор мыши к левому краю экрана и кликнув по пункту "Игрок".</p>
+                  <p>В игровом профиле, кроме баланса, доступна статистика по общему количеству ставок и выигрышных линий.</p>
+                  <p>Выйти из игровой зоны можно переместив курсор к правому краю экрана.</p>
+               </div>
+            </div>
+            <div class="modal-rules__item">
+               <h3 class="modal-rules__item-title">Игровой автомат</h3>
+               <div class="modal-rules__item-text">
+                  <p>Игровой автомат состоит из трех барабанов, трех игровых линий, имеет 7-мь возможных выигрышных комбинаций.</p>
+                  <p>Стандартная ставка игрового автомата $1 - одна активная игровая линия при запуске барабанов. Подключение дополнительных игровых линий стоит еще по $1, каждая. Максимальная сумма ставки при запуске барабанов $3.</p>
+                  <p>Чтобы начать игру необходимо пополнить автомат со свого игрового счета. Пополнять игровой автомат можно на любую сумму, минимальная сумма пополнения $1. Совет: пополняйте игровой автомат небольшими суммами...</p>
+                  <p>Внутренний расчет выигрышей, проигрышей и текущего баланса для ставок отображается на информационных экранах под игровыми барабанами:</p>
+                  <ul>
+                     <li><span class="modal-rules__item-text-b">COINS PLAYED</span> - сумма текущей ставки</li>
+                     <li><span class="modal-rules__item-text-b">CREDITS</span> - сумма текущего баланса игрока</li>
+                     <li><span class="modal-rules__item-text-b">WINNER PAID</span> - суммы выигрыша</li>
+                  </ul>
+                  <p>Управление игровым автоматом происходит с помощью кнопок, в нижней части игрового автомата:</p>
+                  <ul>
+                     <li><span class="modal-rules__item-text-b">CASH OUT</span> - обнуляет баланс игрового автомата (деньги возвращаються игроку на личный счет)</li>
+                     <li><span class="modal-rules__item-text-b">PLAY MAX</span> - делает максимально возможную ставку и сразу запускает барабаны</li>
+                     <li><span class="modal-rules__item-text-b">SPIN</span> - запускает барабаны, только если текущая ставка не равна "0"</li>
+                     <li><span class="modal-rules__item-text-b">BET ONE</span> - увеличивает ставку на одну еденицу за каждое нажатие</li>
+                  </ul>
+               </div>
+            </div>
+            <button class="modal__btn-close btn" data-fancybox-close>
+               <i class="fas fa-times"></i>
+            </button>
+         </section>
+      </div>
+   </div>
+   
+   <script src="js/libs.min.js"></script>
+   <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+// ============================
+// RESETS
+// ============================
+
+table, thead, tbody, tfoot, tr, th, td
+    margin: 0
+    padding: 0
+    border: none
+    border-collapse: inherit
+    border-spacing: 0
+    border-color: inherit
+    vertical-align: inherit
+    font-weight: inherit
+    -webkit-border-horizontal-spacing: 0
+    -webkit-border-vertical-spacing: 0
+
+*, *:before, *:after
+    margin: 0
+    padding: 0
+
+input
+    border-radius: 0
+    box-shadow: none !important
+
+ul, ol
+    list-style-type: none
+
+a, button
+    text-decoration: none
+    cursor: pointer
+
+html
+    -webkit-text-size-adjust: 100%
+    font-family: 'Scada', sans-serif
+
+input:focus,
+label:focus,
+textarea:focus,
+select:focus,
+option:focus,
+button:focus,
+a:focus
+    outline: none
+
+*, *:before, *:after, input, textarea, button, select
+    box-sizing: border-box
+
+// ============================
+// SOCIAL COLORS
+// ============================
+
+$socCol: (telegram: #61A8DE, viber: #8351B6, whatsapp: #12b54f)
+
+@each $name, $color in $socCol
+    .soc_#{$name}
+        color: $color
+
+.slick
+    &-slide 
+        &:focus
+            outline: none                  

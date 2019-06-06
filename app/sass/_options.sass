@@ -1,0 +1,80 @@
+// ============================
+// FONTS
+// ============================
+
+@font-face
+	font:
+		family: "Eklektic"
+		weight: 400
+		style: normal
+	src: url('../fonts/Eklektic.otf') format("opentype")
+
+@font-face
+	font:
+		family: "Angelface"
+		weight: 400
+		style: normal
+	src: url('../fonts/Angelface.otf') format("opentype")
+
+@font-face
+	font:
+		family: "Nirmana"
+		weight: 400
+		style: normal
+	src: url('../fonts/Nirmana.ttf') format("truetype")
+
+@font-face
+	font:
+		family: "Digital"
+		weight: 400
+		style: normal
+	src: url('../fonts/Digital.ttf') format("truetype")
+
+@font-face
+	font:
+		family: "Epson"
+		weight: 400
+		style: normal
+	src: url('../fonts/Epson.ttf') format("truetype")			
+
+$fE: 'Eklektic'
+$fA: 'Angelface'
+$fN: 'Nirmana'
+$fD: 'Digital'	
+$fEp: 'Epson'
+	
+// ============================
+// MEDIA
+// ============================
+
+$mediaBp: (1280px, 980px, 768px, 640px, 480px, 320px)
+$mediaBp2: (1280px, 980px, 768px, 640px)
+
+// ============================
+// FUNCTIONS
+// ============================
+
+@function col-width($n)
+	@if $n == auto
+		@return auto
+	@else
+		@return calc(100% / #{$n})
+
+// ============================
+// MIXINS
+// ============================
+
+@mixin flex ($d: flex, $jc: flex-start, $ji: stretch, $fw: nowrap, $ai: stretch, $fd: row)
+	display: $d
+	flex-flow: $fd $fw
+	justify-content: $jc
+	justify-items: $ji
+	align-items: $ai
+
+@mixin grid ($s: 10px, $w: nowrap, $c: auto)
+	&-grid
+		@include flex($fw: $w)
+		margin: -#{$s}
+		&__col
+			width: col-width($c) 
+			padding: $s	
