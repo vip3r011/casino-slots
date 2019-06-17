@@ -771,6 +771,10 @@ const app = new Vue({
 
    },
    created() {
+      document.oncontextmenu = (e) => {
+         e.preventDefault()
+      }
+
       this.drumsRing.forEach((elem, i) => {
          window[`drumSlots${i + 1}`] = [];
 			window[`curSlot${i + 1}`] = {};
